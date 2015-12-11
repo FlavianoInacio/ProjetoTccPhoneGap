@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2014 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+         <meta name="format-detection" content="telephone=no" />
+  		<meta name="viewport" content="width=device-width, initial-scale=1">        
+        <meta name="msapplication-tap-highlight" content="no" />
+	 	<script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+           <script type="text/javascript" src="js/jquery-1.11.3.js"></script>
+		<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+
+		<link rel="stylesheet" href="css/teste.css" />
+		<link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+		<link rel="stylesheet" href="css/teste.min.css" />
+
+		<script src="jquery.mobile-1.4.5.min.js"></script>
+		<script src="jquery.mobile-1.4.5.js"></script>
+		<script type="text/javascript">
+			document.addEventListener("deviceready", onDeviceReady, false);
+
+			function onDeviceReady()
+			{
+				
+				var db = window.openDatabase("Database","1.0","BancoEstados",2000000);
+				db.transaction(populateDB,errorCB,sucessCB);
+				$('#nome').val("");
+				$('#sigla').val("");
+				$('#capital').val("");
+			}
+
+			function insertVehicleData(tx)
+				{
+				    var db = window.openDatabase("Database","1.0","BancoEstados",2000000);
+				    db.transaction(add,errorCB,sucessCB);
+				}
+
+
+
+			function populateDB(txt)
+			{
+				//txt.executeSql('DROP TABLE IF EXISTS usuarios');
+				txt.executeSql('CREATE TABLE IF NOT EXISTS usuarios(id INTEGER PRIMARY KEY ASC, nome , sigla, ,login,senha)');
+				//txt.executeSql('INSERT INTO usuarios(nome,sigla,capital,login,senha) VALUES("Bahia","BA","Salvador","teste","teste")');
+				//show();
+			}
+			function errorCB(err)
+			{
+				alert("Erro:"+ err.code)
+			}
+			function sucessCB()
+			{
+				alert("Sucess!");
+			}
+			function show()
+			{
+				var db = window.openDatabase("Database","1.0","BancoEstados",2000000);
+				db.transaction(queryDB,errorCB);
+			}
+			function queryDB(tx)
+			{
+				tx.executeSql('SELECT * FROM estados',[],querySucess,errorCB);
+			}	
+			function querySucess (tx, results)
+			{
+				alert(results.rows.item(0).nome);
+				alert(results.rows.item(0).sigla);
+				alert(results.rows.item(0).capital);
+			}
+			function add(tx)
+			{
+				//alert($("#nome").val());
+			/*	var db = window.openDatabase("Database","1.0","BancoEstados",2000000);
+				db.transaction(function(transaction){
+					//transaction.executeSql('INSERT INTO estados(nome,sigla,capital) VALUES ("TESTE","TESTE","TESTE")');
+					transaction.executeSql('INSERT INTO estados(nome,sigla,capital) VALUES ',($('#nome').val(),$('#sigla').val(),$('#capital').val()));
+				}); */
+
+				var antes = Date.now();
+
+				var  vhname=document.getElementById('nome').value;
+   				var vmake= document.getElementById('sigla').value;
+    			var  vtype=document.getElementById('capital').value;
+    			var  vtype1=document.getElementById('login').value;
+    			var  vtype2=document.getElementById('senha').value;
+				
+    			var qtd = document.getElementById('qtd').value;
+
+   				// var currency=document.getElementById('currency').value;
+
+   				for(i=0;i<qtd;i++){
+   					tx.executeSql("INSERT INTO usuarios (nome,sigla,capital,login,senha) VALUES (?,?,?,?,?)",[vhname,vmake,vtype,vtype1,vtype2]);
+   				}
+   				
+   				var duracao = Date.now() - antes;
+				document.body.innerHTML = "levou " + duracao + "ms";
+
+				//window.location.href = "lista.html";
+			}
+		function del()
+			{
+				
+				//alert($("#nome").val());
+				var db = window.openDatabase("Database","1.0","BancoEstados",2000000);
+				db.transaction(deleteDB,errorCB,sucessCB);
+			}
+			function deleteDB(tx)
+			{
+				tx.executeSql('DELETE FROM usuarios;');
+			}
+		</script>
+
+		
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+       <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+         
+        <title>Hello World</title>
+    </head>
+    <body>
+      <div class="ui-header ui-bar-c" data-swatch="c" data-theme="c" data-form="ui-bar-c" data-role="header" role="banner"><a href="index.html" role="button" data-role="button" class="ui-btn-left ui-btn-corner-all ui-btn ui-icon-home ui-btn-icon-notext ui-shadow" title=" Home " data-form="ui-icon"> Home </a><h1 class="ui-title" tabindex="0" role="heading" aria-level="1">Cadastro de Usuário</h1><a href="lista.html" role="button" data-role="button" class="ui-btn-right ui-btn-corner-all ui-btn ui-icon-grid ui-btn-icon-notext ui-shadow" title=" Navigation " data-form="ui-icon"> Navigation </a></div>
+      <br><br>
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="Nome" class="input" data-form="ui-body-a" type="text" id="nome">
+</div>
+
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="CPF" class="input" data-form="ui-body-a" type="text" id="sigla"></div>
+
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="Função" class="input" data-form="ui-body-a" type="text" id="capital"></div>
+
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="Login" class="input" data-form="ui-body-a" type="text" id="login"></div>
+
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="Senha" class="input" data-form="ui-body-a" type="text" id="senha"></div>
+
+<div class="ui-input-text ui-body-a ui-corner-all ui-shadow-inset"><input data-theme="a" placeholder="Quantidade" class="input" data-form="ui-body-a" type="text" id="qtd"></div>
+
+	<button data-icon="star" data-theme="b" data-form="ui-btn-up-b" class=" ui-btn ui-btn-b ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" onclick="insertVehicleData()">Salvar</button>
+    <button data-icon="star" data-theme="b" data-form="ui-btn-up-b" class=" ui-btn ui-btn-b ui-icon-star ui-btn-icon-left ui-shadow ui-corner-all" onclick="del()">Deletar todos</button>
+       
+        <script type="text/javascript">
+            app.initialize();
+        </script>
+    </body>
+</html>
